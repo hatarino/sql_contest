@@ -1,0 +1,24 @@
+SELECT
+    LINE_ID AS LINE,
+    SEAT_NO AS SEAT_F,
+    SEAT_NO + 2 AS SEAT_T
+FROM SEAT_RESERVE
+WHERE
+    RSV_STATUS = '0'
+    AND EXISTS (
+        SELECT 1
+        FROM SEAT_RESERVE AS S
+        WHERE
+            S.LINE_ID = SEAT_RESERVE.LINE_ID
+            AND S.SEAT_NO = SEAT_RESERVE.SEAT_NO + 1
+            AND S.RSV_STATUS = '0'
+    )
+    AND EXISTS (
+        SELECT 1
+        FROM SEAT_RESERVE AS S
+        WHERE
+            S.LINE_ID = SEAT_RESERVE.LINE_ID
+            AND S.SEAT_NO = SEAT_RESERVE.SEAT_NO + 2
+            AND S.RSV_STATUS = '0'
+    )
+ORDER BY LINE_ID DESC, SEAT_F ASC;
